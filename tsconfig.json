@@ -20,5 +20,8 @@
   },
   "include": [
     "src/main/**/*",
+  ],
+  "exclude": [
+    "node_modules/**/*",
   ]
 }
