@@ -2,7 +2,7 @@ import {join} from "path";
 import {app, BrowserWindow as bw, ipcMain, ShareMenu, shell} from "electron";
 import * as windowStateKeeper from "electron-window-state";
 import * as express from "express";
-import getPort = require("esm")("get-port-cjs");
+import * as getPort from "get-port";
 import {search} from "youtube-search-without-api-key";
 import {
     existsSync,
@@ -324,6 +324,7 @@ export class BrowserWindow {
      * @yields {object} Electron browser window
      */
     async createWindow(): Promise<Electron.BrowserWindow> {
+        //@ts-ignore
         this.clientPort = await getPort({port: 9000});
         BrowserWindow.verifyFiles();
         this.StartWatcher(utils.getPath('themes'));
@@ -586,7 +587,8 @@ export class BrowserWindow {
         remote.use(express.static(join(utils.getPath('srcPath'), "./web-remote/")))
         remote.set("views", join(utils.getPath('srcPath'), "./web-remote/views"));
         remote.set("view engine", "ejs");
-        getPorts({port: 6942}).then((port: number) => {
+        //@ts-ignore
+        getPort({port: 6942}).then((port: number) => {
             this.remotePort = port;
             // Start Remote Discovery
             this.broadcastRemote()
@@ -1449,7 +1451,7 @@ export class BrowserWindow {
             "CtlN": "Cider", 
             "iV": "196623"
         };
-        let server2 = mdns.createAdvertisement(x, `${await getPort.default(({port: 3839}))}`, {
+        let server2 = mdns.createAdvertisement(x, `${await getPort(({port: 3839}))}`, {
             name: encoded,
             txt: txt_record
         });
